@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>n8n Installation on WordPress VPS – Professional Setup Service</title>
+<meta name="description" content="Professional n8n installation on WordPress VPS. Zero downtime setup for cPanel, Plesk, AWS. Fast, reliable, expert configuration.">
+<meta name="keywords" content="n8n, WordPress VPS, installation, cPanel, Plesk, automation, hosting, DigitalOcean, AWS">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0f172a;
+    --navy-mid: #1e293b;
+    --navy-light: #243352;
+    --blue: #3b82f6;
+    --blue-light: #60a5fa;
+    --cyan: #06b6d4;
+    --cyan-light: #22d3ee;
+    --white: #ffffff;
+    --gray-light: #e2e8f0;
+    --gray: #94a3b8;
+    --green: #10b981;
+    --card-bg: #162032;
+    --border: rgba(59,130,246,0.18);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    background: rgba(15,23,42,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 16px; color: #fff;
+  }
+  .logo-text { font-size: 18px; font-weight: 700; color: var(--white); }
+  .logo-text span { color: var(--cyan); }
+  nav ul { list-style: none; display: flex; gap: 32px; }
+  nav ul a { color: var(--gray-light); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  nav ul a:hover { color: var(--cyan); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #fff; border: none; padding: 9px 22px; border-radius: 8px;
+    font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1e3a6e 0%, var(--navy) 70%);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 5% 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 860px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3);
+    color: var(--blue-light); padding: 6px 16px; border-radius: 50px;
+    font-size: 13px; font-weight: 500; margin-bottom: 28px;
+  }
+  .hero-badge::before { content: '●'; color: var(--green); font-size: 8px; }
+  h1 {
+    font-size: clamp(36px, 5.5vw, 60px);
+    font-weight: 800; line-height: 1.15;
+    background: linear-gradient(135deg, #fff 0%, #93c5fd 50%, var(--cyan) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 21px);
+    color: var(--gray-light); max-width: 640px; margin: 0 auto 40px;
+    font-weight: 400;
+  }
+  .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);
+    color: #fff; padding: 15px 36px; border-radius: 10px;
+    font-weight: 700; font-size: 16px; text-decoration: none;
+    box-shadow: 0 4px 30px rgba(59,130,246,0.4);
+    transition: all 0.25s; border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(59,130,246,0.5); }
+  .btn-secondary {
+    background: transparent; color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    padding: 15px 36px; border-radius: 10px;
+    font-weight: 600; font-size: 16px; text-decoration: none;
+    transition: all 0.25s; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
+  .hero-trust { color: var(--gray); font-size: 14px; }
+  .hero-trust strong { color: var(--gray-light); }
+  .hero-visual {
+    margin-top: 60px;
+    display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+  }
+  .tech-badge {
+    background: var(--card-bg); border: 1px solid var(--border);
+    padding: 12px 20px; border-radius: 12px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 600; color: var(--gray-light);
+    transition: border-color 0.2s;
+  }
+  .tech-badge:hover { border-color: var(--blue); }
+  .tech-badge .icon { font-size: 22px; }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    background: var(--navy-mid);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 32px 5%;
+    display: flex; justify-content: center; gap: 64px; flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-size: 36px; font-weight: 800;
+    background: linear-gradient(135deg, var(--blue-light), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .stat-label { color: var(--gray); font-size: 13px; margin-top: 4px; }
+
+  /* ── SECTIONS ── */
+  section { padding: 96px 5%; }
+  section:nth-child(even) { background: var(--navy-mid); }
+  .section-tag {
+    display: inline-block;
+    color: var(--cyan); font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  h2 {
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 800; line-height: 1.2; margin-bottom: 16px;
+  }
+  .section-sub { color: var(--gray); font-size: 17px; max-width: 560px; }
+  .section-header { text-align: center; margin-bottom: 64px; }
+  .section-header .section-sub { margin: 0 auto; }
+
+  /* ── VALUE PROPS ── */
+  .value-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  .value-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .value-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--blue);
+    box-shadow: 0 12px 40px rgba(59,130,246,0.15);
+  }
+  .value-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 18px;
+  }
+  .value-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .value-card p { color: var(--gray); font-size: 14px; line-height: 1.7; }
+
+  /* ── SERVICES ── */
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  .service-card {
+    background: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+    transition: all 0.25s;
+  }
+  .service-card:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 1px var(--cyan), 0 12px 40px rgba(6,182,212,0.1);
+    transform: translateY(-3px);
+  }
+  .service-card .s-icon {
+    font-size: 36px; margin-bottom: 16px; display: block;
+  }
+  .service-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 14px; color: var(--white); }
+  .service-card ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .service-card ul li {
+    color: var(--gray); font-size: 14px;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .service-card ul li::before { content: '→'; color: var(--cyan); flex-shrink: 0; }
+
+  /* ── PLATFORMS ── */
+  .platforms-wrap { max-width: 1000px; margin: 0 auto; }
+  .platform-group { margin-bottom: 40px; }
+  .platform-group-label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--cyan); margin-bottom: 16px;
+  }
+  .platform-logos {
+    display: flex; flex-wrap: wrap; gap: 12px;
+  }
+  .platform-chip {
+    background: var(--card-bg); border: 1px solid var(--border);
+    padding: 10px 18px; border-radius: 50px;
+    font-size: 14px; font-weight: 600; color: var(--gray-light);
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .platform-chip:hover { border-color: var(--blue); color: var(--white); }
+  .platform-chip span { font-size: 18px; }
+
+  /* ── PRICING ── */
+  .pricing-grid {
+    display: flex; gap: 24px; justify-content: center;
+    max-width: 1000px; margin: 0 auto; flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .price-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px 32px;
+    flex: 1; min-width: 260px; max-width: 310px;
+    transition: all 0.25s; position: relative;
+    overflow: hidden;
+  }
+  .price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(59,130,246,0.15); }
+  .price-card.featured {
+    border-color: var(--blue);
+    background: linear-gradient(160deg, #1a2d55 0%, var(--card-bg) 100%);
+    box-shadow: 0 0 0 1px var(--blue), 0 12px 50px rgba(59,130,246,0.2);
+    transform: scale(1.03);
+  }
+  .price-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+  .popular-badge {
+    position: absolute; top: 0; right: 0;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #fff; font-size: 11px; font-weight: 700;
+    padding: 6px 16px; border-radius: 0 0 0 12px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .price-name { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--gray); margin-bottom: 8px; }
+  .price-amount {
+    font-size: 52px; font-weight: 900; line-height: 1;
+    background: linear-gradient(135deg, var(--white), var(--blue-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .price-amount span { font-size: 22px; font-weight: 600; vertical-align: super; }
+  .price-desc { color: var(--gray); font-size: 13px; margin: 8px 0 24px; }
+  .price-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .price-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .price-features li {
+    font-size: 14px; color: var(--gray-light);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .check { color: var(--green); font-size: 16px; flex-shrink: 0; }
+  .btn-price {
+    display: block; text-align: center; text-decoration: none;
+    padding: 13px; border-radius: 10px; font-weight: 700; font-size: 15px;
+    transition: all 0.25s;
+  }
+  .btn-price-primary {
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+  }
+  .btn-price-primary:hover { box-shadow: 0 8px 32px rgba(59,130,246,0.5); transform: translateY(-1px); }
+  .btn-price-outline {
+    background: transparent; color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.2);
+  }
+  .btn-price-outline:hover { border-color: var(--blue); color: var(--blue-light); }
+
+  /* ── PROCESS ── */
+  .process-wrap {
+    max-width: 900px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .process-step {
+    display: flex; gap: 32px; position: relative;
+    padding-bottom: 48px;
+  }
+  .process-step:last-child { padding-bottom: 0; }
+  .step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .step-num {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900; color: #fff;
+    box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
+    flex-shrink: 0;
+  }
+  .step-line {
+    width: 2px; flex: 1; margin-top: 8px;
+    background: linear-gradient(to bottom, var(--blue), transparent);
+    min-height: 40px;
+  }
+  .step-content { padding-top: 10px; }
+  .step-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .step-content p { color: var(--gray); font-size: 15px; }
+  .step-detail {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px; margin-top: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .step-detail li {
+    color: var(--gray-light); font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+    list-style: none;
+  }
+  .step-detail li::before { content: '✓'; color: var(--green); font-weight: 700; }
+
+  /* ── TESTIMONIALS ── */
+  .testi-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  .testi-card {
+    background: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px;
+    transition: all 0.25s;
+  }
+  .testi-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .stars { color: #fbbf24; font-size: 16px; letter-spacing: 2px; margin-bottom: 14px; }
+  .testi-text { color: var(--gray-light); font-size: 15px; line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff; flex-shrink: 0;
+  }
+  .testi-name { font-weight: 700; font-size: 15px; }
+  .testi-role { color: var(--gray); font-size: 13px; }
+
+  /* ── FAQ ── */
+  .faq-wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+  .faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+  .faq-q {
+    width: 100%; text-align: left; background: none; border: none;
+    padding: 20px 24px; color: var(--white); font-size: 16px; font-weight: 600;
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    gap: 16px; transition: color 0.2s;
+  }
+  .faq-q:hover { color: var(--cyan); }
+  .faq-q .chevron { transition: transform 0.3s; font-size: 18px; color: var(--gray); flex-shrink: 0; }
+  .faq-item.open .faq-q { color: var(--cyan); }
+  .faq-item.open .chevron { transform: rotate(180deg); color: var(--cyan); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s;
+    color: var(--gray); font-size: 15px; line-height: 1.7;
+    padding: 0 24px;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding: 0 24px 20px; }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    background: linear-gradient(135deg, #1a2d55 0%, #0f172a 50%, #0d2a2f 100%);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    padding: 100px 5%;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(6,182,212,0.08) 0%, transparent 70%);
+  }
+  .cta-section > * { position: relative; z-index: 1; }
+  .cta-section h2 { max-width: 700px; margin: 0 auto 16px; }
+  .cta-sub { color: var(--gray-light); font-size: 18px; margin-bottom: 40px; }
+  .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .guarantee-bar {
+    display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+    margin-top: 40px;
+  }
+  .guarantee-item {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--gray); font-size: 13px;
+  }
+  .guarantee-item .g-icon { font-size: 18px; }
+
+  /* ── CONTACT FORM ── */
+  .form-wrap {
+    max-width: 620px; margin: 48px auto 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px;
+  }
+  .form-title { font-size: 20px; font-weight: 700; margin-bottom: 24px; text-align: center; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 13px; font-weight: 600; color: var(--gray-light); }
+  input, select, textarea {
+    background: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 14px;
+    color: var(--white); font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none; width: 100%;
+    font-family: inherit;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  }
+  textarea { resize: vertical; min-height: 100px; }
+  select { cursor: pointer; }
+  option { background: var(--navy-mid); }
+  .form-submit {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #fff; border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: all 0.25s; margin-top: 8px;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.3);
+  }
+  .form-submit:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(59,130,246,0.45); }
+  #form-success {
+    display: none; text-align: center; padding: 20px;
+    color: var(--green); font-size: 16px; font-weight: 600;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #080e1a;
+    border-top: 1px solid var(--border);
+    padding: 56px 5% 32px;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 48px; max-width: 1100px; margin: 0 auto 48px;
+  }
+  .footer-brand p { color: var(--gray); font-size: 14px; margin: 16px 0 20px; line-height: 1.7; }
+  .footer-contact-item {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--gray); font-size: 13px; text-decoration: none;
+    transition: color 0.2s; margin-bottom: 8px;
+  }
+  .footer-contact-item:hover { color: var(--cyan); }
+  .footer-col h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-light); margin-bottom: 16px; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { color: var(--gray); font-size: 14px; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--cyan); }
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-bottom p { color: var(--gray); font-size: 13px; }
+  .footer-bottom-links { display: flex; gap: 20px; }
+  .footer-bottom-links a { color: var(--gray); font-size: 13px; text-decoration: none; transition: color 0.2s; }
+  .footer-bottom-links a:hover { color: var(--cyan); }
+
+  /* ── SCROLL TOP ── */
+  .scroll-top {
+    position: fixed; bottom: 28px; right: 28px; z-index: 100;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border: none; color: #fff; font-size: 20px; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+    transition: all 0.25s;
+  }
+  .scroll-top.visible { display: flex; }
+  .scroll-top:hover { transform: translateY(-2px); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav ul { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .stats-strip { gap: 32px; }
+    .process-step { flex-direction: column; gap: 12px; }
+    .step-line { display: none; }
+  }
+  @media (max-width: 540px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .pricing-grid { flex-direction: column; align-items: center; }
+    .price-card.featured { transform: none; }
+    .price-card.featured:hover { transform: translateY(-4px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">n8</div>
+    <span class="logo-text">n8n<span>Pro</span> Setup</span>
+  </a>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://www.fiverr.com" target="_blank" class="nav-cta">Get Started →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-badge">Available on Fiverr · Rated 5★ by clients</div>
+    <h1>Install n8n on Your<br>WordPress VPS —<br>Zero Downtime</h1>
+    <p class="hero-sub">Professional n8n setup and automation for hosting infrastructure. Safe, fast, reliable deployment on any VPS in 24–48 hours.</p>
+    <div class="hero-btns">
+      <a href="https://www.fiverr.com" target="_blank" class="btn-primary">🚀 Order Now</a>
+      <a href="#contact" class="btn-secondary">💬 Request Quote</a>
+    </div>
+    <p class="hero-trust">Trusted by <strong>hosting companies</strong> and <strong>digital agencies</strong> worldwide</p>
+    <div class="hero-visual">
+      <div class="tech-badge"><span class="icon">⚙️</span> n8n Automation</div>
+      <div class="tech-badge"><span class="icon">🔒</span> SSL Secured</div>
+      <div class="tech-badge"><span class="icon">🌐</span> WordPress Safe</div>
+      <div class="tech-badge"><span class="icon">☁️</span> Cloud-Ready</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-num">100+</div>
+    <div class="stat-label">Successful Deployments</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">24h</div>
+    <div class="stat-label">Average Delivery</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">5★</div>
+    <div class="stat-label">Client Rating</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Downtime Incidents</div>
+  </div>
+</div>
+
+<!-- VALUE PROPS -->
+<section>
+  <div class="section-header">
+    <span class="section-tag">Why Choose Us</span>
+    <h2>Built for Hosting Professionals</h2>
+    <p class="section-sub">Everything you need to add powerful n8n automation to your existing infrastructure — without disrupting a thing.</p>
+  </div>
+  <div class="value-grid">
+    <div class="value-card">
+      <div class="value-icon" style="background:rgba(59,130,246,0.15);">🛡️</div>
+      <h3>Zero Downtime Installation</h3>
+      <p>Your WordPress sites stay 100% live during the entire setup process. We isolate n8n as a separate service.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background:rgba(6,182,212,0.15);">🖥️</div>
+      <h3>Multi-Panel Support</h3>
+      <p>Works with cPanel, Plesk, CyberPanel, CloudPanel, AWS, DigitalOcean, Hetzner, Contabo, and more.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background:rgba(16,185,129,0.15);">⚡</div>
+      <h3>Production Ready in 24–48h</h3>
+      <p>Fast, efficient deployment with thorough testing. Your n8n instance will be live and fully operational quickly.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background:rgba(251,191,36,0.12);">🎯</div>
+      <h3>Expert Infrastructure Setup</h3>
+      <p>Professional configuration, security hardening, performance tuning, and complete SSL/domain setup included.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <span class="section-tag">What We Deliver</span>
+    <h2>What We Install & Configure</h2>
+    <p class="section-sub">A complete end-to-end service — from clean installation to handoff documentation.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="s-icon">⚙️</span>
+      <h3>n8n Installation & Setup</h3>
+      <ul>
+        <li>Complete n8n deployment on your VPS</li>
+        <li>System optimization and performance tuning</li>
+        <li>Security hardening and firewall rules</li>
+        <li>Process manager configuration (PM2/systemd)</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <span class="s-icon">🔒</span>
+      <h3>Domain & SSL Configuration</h3>
+      <ul>
+        <li>Domain or subdomain setup for n8n access</li>
+        <li>SSL certificate installation (Let's Encrypt)</li>
+        <li>HTTPS redirect and verification</li>
+        <li>Nginx/Apache reverse proxy config</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <span class="s-icon">✅</span>
+      <h3>Testing & Validation</h3>
+      <ul>
+        <li>Complete system testing</li>
+        <li>Workflow execution verification</li>
+        <li>Performance benchmarking</li>
+        <li>Delivery with documentation</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <span class="s-icon">🤝</span>
+      <h3>Ongoing Support</h3>
+      <ul>
+        <li>Basic workflow guidance included</li>
+        <li>Troubleshooting assistance</li>
+        <li>30-day follow-up (Premium)</li>
+        <li>Responsive communication</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORMS -->
+<section>
+  <div class="section-header">
+    <span class="section-tag">Compatibility</span>
+    <h2>Works With All Major Platforms</h2>
+    <p class="section-sub">Whatever your hosting setup, we've got you covered.</p>
+  </div>
+  <div class="platforms-wrap">
+    <div class="platform-group">
+      <div class="platform-group-label">⚡ Control Panels</div>
+      <div class="platform-logos">
+        <div class="platform-chip"><span>🟠</span> cPanel</div>
+        <div class="platform-chip"><span>🔵</span> Plesk</div>
+        <div class="platform-chip"><span>🟢</span> CyberPanel</div>
+        <div class="platform-chip"><span>☁️</span> CloudPanel</div>
+        <div class="platform-chip"><span>🖥️</span> DirectAdmin</div>
+      </div>
+    </div>
+    <div class="platform-group">
+      <div class="platform-group-label">☁️ Cloud Providers</div>
+      <div class="platform-logos">
+        <div class="platform-chip"><span>🟡</span> AWS (EC2/Lightsail)</div>
+        <div class="platform-chip"><span>🔵</span> DigitalOcean</div>
+        <div class="platform-chip"><span>🔴</span> Google Cloud</div>
+        <div class="platform-chip"><span>🔴</span> Hetzner</div>
+        <div class="platform-chip"><span>🟣</span> Contabo</div>
+        <div class="platform-chip"><span>🔵</span> OVH</div>
+        <div class="platform-chip"><span>⚫</span> Vultr</div>
+      </div>
+    </div>
+    <div class="platform-group">
+      <div class="platform-group-label">🐧 Linux Distributions</div>
+      <div class="platform-logos">
+        <div class="platform-chip"><span>🟠</span> Ubuntu 20.04 / 22.04</div>
+        <div class="platform-chip"><span>🔵</span> AlmaLinux 8 / 9</div>
+        <div class="platform-chip"><span>🔴</span> Debian 10 / 11 / 12</div>
+        <div class="platform-chip"><span>🟡</span> Rocky Linux</div>
+        <div class="platform-chip"><span>⚫</span> CentOS 7 / 8</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-header">
+    <span class="section-tag">Pricing</span>
+    <h2>Transparent, Flexible Pricing</h2>
+    <p class="section-sub">Choose the package that fits your needs. No hidden fees, no surprises.</p>
+  </div>
+  <div class="pricing-grid">
+    <!-- BASIC -->
+    <div class="price-card">
+      <div class="price-name">Basic</div>
+      <div class="price-amount"><span>$</span>15</div>
+      <div class="price-desc">Perfect for quick installations</div>
+      <hr class="price-divider">
+      <ul class="price-features">
+        <li><span class="check">✓</span> n8n installation & setup</li>
+        <li><span class="check">✓</span> Single domain configuration</li>
+        <li><span class="check">✓</span> System testing & validation</li>
+        <li><span class="check">✓</span> 1 hour support included</li>
+        <li><span class="check">✓</span> Delivery in 24 hours</li>
+      </ul>
+      <a href="https://www.fiverr.com" target="_blank" class="btn-price btn-price-outline">Order Basic</a>
+    </div>
+
+    <!-- STANDARD - FEATURED -->
+    <div class="price-card featured">
+      <div class="popular-badge">⭐ Most Popular</div>
+      <div class="price-name">Standard</div>
+      <div class="price-amount"><span>$</span>20</div>
+      <div class="price-desc">Best value for most clients</div>
+      <hr class="price-divider">
+      <ul class="price-features">
+        <li><span class="check">✓</span> Full n8n installation & setup</li>
+        <li><span class="check">✓</span> Domain & SSL configuration</li>
+        <li><span class="check">✓</span> Workflow guidance session</li>
+        <li><span class="check">✓</span> 4 hours support included</li>
+        <li><span class="check">✓</span> Security hardening</li>
+        <li><span class="check">✓</span> Delivery in 24–48 hours</li>
+      </ul>
+      <a href="https://www.fiverr.com" target="_blank" class="btn-price btn-price-primary">Order Standard</a>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="price-card">
+      <div class="price-name">Premium</div>
+      <div class="price-amount"><span>$</span>30</div>
+      <div class="price-desc">Complete infrastructure solution</div>
+      <hr class="price-divider">
+      <ul class="price-features">
+        <li><span class="check">✓</span> Complete infrastructure setup</li>
+        <li><span class="check">✓</span> Multiple domains supported</li>
+        <li><span class="check">✓</span> Advanced security hardening</li>
+        <li><span class="check">✓</span> 6 hours support included</li>
+        <li><span class="check">✓</span> 30-day follow-up support</li>
+        <li><span class="check">✓</span> Priority response time</li>
+      </ul>
+      <a href="https://www.fiverr.com" target="_blank" class="btn-price btn-price-outline">Order Premium</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-header">
+    <span class="section-tag">How It Works</span>
+    <h2>Simple 3-Step Process</h2>
+    <p class="section-sub">We handle the complexity so you don't have to.</p>
+  </div>
+  <div class="process-wrap">
+    <div class="process-step">
+      <div class="step-left">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <h3>Discovery & Assessment</h3>
+        <p>You share your VPS details and requirements. We assess your infrastructure and confirm compatibility.</p>
+        <ul class="step-detail">
+          <li>Share VPS credentials securely</li>
+          <li>Confirm OS, panel, and domain details</li>
+          <li>Define scope and timeline</li>
+        </ul>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-left">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <h3>Installation & Configuration</h3>
+        <p>We install n8n safely alongside your existing setup — zero impact on your running sites.</p>
+        <ul class="step-detail">
+          <li>Clean n8n installation and dependencies</li>
+          <li>Domain, subdomain & SSL certificate setup</li>
+          <li>Security hardening and performance tuning</li>
+        </ul>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-left">
+        <div class="step-num">3</div>
+      </div>
+      <div class="step-content">
+        <h3>Testing & Handoff</h3>
+        <p>Complete testing, documentation, and a brief orientation. Support is included post-delivery.</p>
+        <ul class="step-detail">
+          <li>Full system and workflow testing</li>
+          <li>Delivery report and documentation</li>
+          <li>Support period begins immediately</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="section-header">
+    <span class="section-tag">Social Proof</span>
+    <h2>What Our Clients Say</h2>
+    <p class="section-sub">Hosting professionals and agencies trust our setup service.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Incredibly smooth process. Our WordPress multisite wasn't touched at all — n8n was live and running on a subdomain within hours. Highly recommend."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">MK</div>
+        <div>
+          <div class="testi-name">Michael K.</div>
+          <div class="testi-role">CTO, Hosting Agency</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"We manage 40+ client sites on cPanel. The setup was clean, documented, and they even hardened the server. Great value at this price point."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">SR</div>
+        <div>
+          <div class="testi-name">Sarah R.</div>
+          <div class="testi-role">Director, Digital Agency</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Professional, fast, and responsive. Had n8n running on our AWS Lightsail instance with SSL in under 12 hours. The 30-day support gave us real peace of mind."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">JD</div>
+        <div>
+          <div class="testi-name">James D.</div>
+          <div class="testi-role">Infrastructure Lead, SaaS Co.</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Our Plesk server was complex but they handled everything flawlessly. The setup documentation they provided was genuinely useful. Will use again."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AL</div>
+        <div>
+          <div class="testi-name">Ana L.</div>
+          <div class="testi-role">DevOps Manager, Web Studio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-header">
+    <span class="section-tag">FAQ</span>
+    <h2>Frequently Asked Questions</h2>
+    <p class="section-sub">Everything you need to know before ordering.</p>
+  </div>
+  <div class="faq-wrap">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Will this affect my existing WordPress sites?
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="faq-a">No. We install n8n as a completely separate service on its own port and subdomain. Your WordPress installations, databases, and files are never touched. There is zero downtime and zero impact on running sites.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What if I use a different hosting provider not listed?
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="faq-a">We support all major VPS providers and hosting control panels. As long as you have root or sudo access to a Linux VPS, we can work with it. Simply message us before ordering if you're unsure.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Do you provide ongoing support after delivery?
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="faq-a">Yes. All packages include dedicated support. The Standard package includes 4 hours of support, and the Premium package includes 6 hours plus a full 30-day follow-up period for questions and minor adjustments.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can you help with custom n8n workflow setup?
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="faq-a">We provide basic workflow guidance and walkthrough as part of the service. For advanced custom workflow development, we can recommend experienced n8n specialists to work alongside your team.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How is security handled during and after installation?
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="faq-a">We implement SSL/TLS encryption, configure firewall rules, set up authentication, and follow industry best practices for server hardening. The Standard and Premium packages include dedicated security hardening steps.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What access do you need to my server?
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="faq-a">We'll ask for temporary SSH access (root or sudo user) and any relevant control panel credentials. All credentials are used only for the scope of work and can be changed after delivery for your peace of mind.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA + CONTACT -->
+<div class="cta-section" id="contact">
+  <span class="section-tag">Get Started</span>
+  <h2>Ready to Automate Your WordPress Infrastructure?</h2>
+  <p class="cta-sub">Get professional n8n setup in 24–48 hours. No downtime. No fuss.</p>
+  <div class="cta-btns">
+    <a href="https://www.fiverr.com" target="_blank" class="btn-primary">🚀 Order on Fiverr</a>
+    <a href="mailto:emran.alarif8@gmail.com" class="btn-secondary">📧 Email Us</a>
+  </div>
+  <div class="guarantee-bar">
+    <div class="guarantee-item"><span class="g-icon">🛡️</span> Zero Downtime Guarantee</div>
+    <div class="guarantee-item"><span class="g-icon">⚡</span> 24–48h Delivery</div>
+    <div class="guarantee-item"><span class="g-icon">💬</span> Responsive Support</div>
+    <div class="guarantee-item"><span class="g-icon">🔒</span> Secure Process</div>
+  </div>
+
+  <div class="form-wrap">
+    <div class="form-title">📬 Send an Inquiry</div>
+    <div id="contact-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="fname">Name *</label>
+          <input type="text" id="fname" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="femail">Email *</label>
+          <input type="email" id="femail" placeholder="you@company.com">
+        </div>
+        <div class="form-group">
+          <label for="fcompany">Company</label>
+          <input type="text" id="fcompany" placeholder="Your company">
+        </div>
+        <div class="form-group">
+          <label for="fvps">VPS / Panel Type</label>
+          <select id="fvps">
+            <option value="">Select one...</option>
+            <option>cPanel</option>
+            <option>Plesk</option>
+            <option>CyberPanel</option>
+            <option>CloudPanel</option>
+            <option>AWS (EC2/Lightsail)</option>
+            <option>DigitalOcean</option>
+            <option>Hetzner</option>
+            <option>Contabo</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label for="fmessage">Message *</label>
+          <textarea id="fmessage" placeholder="Tell us about your infrastructure and what you need..."></textarea>
+        </div>
+      </div>
+      <button class="form-submit" onclick="submitForm()">Send Inquiry →</button>
+    </div>
+    <div id="form-success">
+      ✅ Thanks! Your message was sent. We'll reply within a few hours at <strong>emran.alarif8@gmail.com</strong>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-icon">n8</div>
+        <span class="logo-text">n8n<span>Pro</span> Setup</span>
+      </a>
+      <p>Professional n8n installation and automation setup for WordPress VPS environments. Trusted by hosting companies and digital agencies worldwide.</p>
+      <a href="mailto:emran.alarif8@gmail.com" class="footer-contact-item">📧 emran.alarif8@gmail.com</a>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul class="footer-links">
+        <li><a href="#services">n8n Installation</a></li>
+        <li><a href="#services">Domain & SSL Setup</a></li>
+        <li><a href="#services">Testing & Validation</a></li>
+        <li><a href="#services">Ongoing Support</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Platforms</h4>
+      <ul class="footer-links">
+        <li><a href="#pricing">cPanel</a></li>
+        <li><a href="#pricing">Plesk</a></li>
+        <li><a href="#pricing">CyberPanel</a></li>
+        <li><a href="#pricing">AWS / DigitalOcean</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="https://www.fiverr.com" target="_blank">Order on Fiverr</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 n8nPro Setup · All rights reserved</p>
+    <div class="footer-bottom-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="mailto:emran.alarif8@gmail.com">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // FAQ toggle
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Scroll top button
+  const scrollTopBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+  });
+
+  // Form submit
+  function submitForm() {
+    const name = document.getElementById('fname').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    const msg = document.getElementById('fmessage').value.trim();
+    if (!name || !email || !msg) {
+      alert('Please fill in your name, email, and message.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  }
+
+  // Smooth scroll for nav anchors
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Open first FAQ
+  document.querySelector('.faq-item').classList.add('open');
+</script>
+
+</body>
+</html>
